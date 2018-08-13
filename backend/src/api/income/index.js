@@ -3,12 +3,27 @@ module.exports = function (app) {
   const route = express.Router();
   const bodyParser = require('body-parser');
   const db = require('config/db')();
+  const moment = require('moment');
   app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
   app.use(bodyParser.json());
 
   // get income list
+  route.post('/list', function (req, res) {
+    const thisMonth = req.body.thisMonth
+    const range = req.body.range ? req.body.range : 0
+    const MonthQuery = ` and (date >= ${moment(thisMonth).add(range, 'M').unix()} and date < ${moment(thisMonth).add(range + 1, 'M').unix()})`
+    const sql = `SELECT id as 'key', FROM_UNIXTIME(date, '%m/%d/%Y') as date, type, category, description, sum FROM income_list WHERE display=1 ${MonthQuery}`
+
+    db.query(sql, function (err, rows, fields) {
+      if (err) res.json(err)
+      res.json(rows) 
+    })
+  })
+
+  //  sample (delete)
+
   route.get('/list', function (req, res) {
-    const sql = "SELECT id as 'key', date, type, category, description, sum FROM income_list where display=1"
+    const sql = "SELECT id as 'key', FROM_UNIXTIME(date, '%m/%d/%Y') as date, type, category, description, sum FROM income_list where display=1"
     db.query(sql, function (err, rows, fields) {
       res.json(rows)
       // console.log(rows)
@@ -24,13 +39,13 @@ module.exports = function (app) {
     })
   })
 
-  // delete list 
-  route.post('/delete', function (req, res) {
+  // remove list 
+  route.post('/remove', function (req, res) {
+    console.log(req.body)
     const sql = `UPDATE income_list SET display=0 WHERE id=${req.body.id}`
     db.query(sql, function (err, rows, fields) {
-      if(!err) {
-        res.json({'delete': 'success'})
-      }
+      if (err) res.json(err)
+      res.json(rows) 
     })
   })
 
@@ -38,7 +53,6 @@ module.exports = function (app) {
   route.post('/item', function (req, res) {
     const param = req.body.data
     const sql = 'INSERT INTO income_list SET ?'
-    console.log(param)
     const data = {
       date: param.date,
       type: param.type,
