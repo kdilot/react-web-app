@@ -83,27 +83,27 @@ const IncomeTable = () => {
               <Row>
                 <Col span={24} style={{ textAlign: 'center', margin: '1em 0' }}>
                   <Col span={6} style={{ textAlign: 'right' }}>
-                    <Button type="primary" shape="circle" icon="caret-left" onClick={() => { store.handleMonthChange(-1) }} />
+                    <Button type="primary" shape="circle" icon="arrow-left" onClick={() => { store.handleMonthChange(-1) }} />
                   </Col>
                   <Col span={12}>
                     <MonthPicker placeholder="Select month" defaultValue={store.thisMonth} value={store.thisMonth} onChange={store.handleMonth} />
                   </Col>
                   <Col span={6} style={{ textAlign: 'left' }}>
-                    <Button type="primary" shape="circle" icon="caret-right" onClick={() => { store.handleMonthChange(1) }} />
+                    <Button type="primary" shape="circle" icon="arrow-right" onClick={() => { store.handleMonthChange(1) }} />
                   </Col>
                 </Col>
               </Row>
 
               <Row>
                 <Col span={24}>
-                  <Table columns={columns} dataSource={store.data} pagination={{ pageSize: 15 }} size="small" />
+                  <Table columns={columns} dataSource={store.data} pagination={{ pageSize: 15 }} size="small" scroll={{ x: 800 }} />
                 </Col>
               </Row>
             </Row>
             <br />
             <Row>
               <Col span={24}>
-                <Table columns={sumColumns} dataSource={store.sumData} pagination={{ hideOnSinglePage: true }} />
+                <Table columns={sumColumns} dataSource={store.sumData} pagination={{ hideOnSinglePage: true }} scroll={{ x: 800 }} />
               </Col>
             </Row>
           </Row>
