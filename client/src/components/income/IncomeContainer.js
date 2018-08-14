@@ -12,29 +12,32 @@ class IncomeContainer extends Component {
   getCategory = () => { // get income category list
     axios.get('/api/income/category')
       .then(res =>
-        this.setState({ categoryList: res.data, firstCatgory: res.data[0].id })
+        this.setState(prev => (
+          {
+            createData: {
+              ...prev.createData,
+              category: res.data[0].id
+            },
+            categoryList: res.data,
+          }
+        ))
       )
   }
 
   getList = () => {
     const { thisMonth } = this.state
-    let arr = [{
-      'income': 0,
-      'expense' : 0,
-      'difference': 0,
-      'key': 'sumData'
-    }]
     axios.post('/api/income/list', { thisMonth })
-      .then(res => {
-        (
-          arr[0].income = res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
-          arr[0].expense = res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
-          arr[0].difference = (arr[0].income - arr[0].expense).toFixed(2)
-        ),
-          this.setState({ data: res.data, sumData: arr })
-      }
-
-      )
+      .then(res => (
+        this.setState({ 
+          data: res.data, 
+          sumData: [{
+            income: res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
+            expense: res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
+            difference: (res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2) - res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2)).toFixed(2),
+            key: 'sumData'
+          }]
+        })
+      ))
   }
 
   setList = (data) => {
@@ -67,11 +70,11 @@ class IncomeContainer extends Component {
       })
   }
 
-  handleCreate = () => {
-    const { createData, loading } = this.state
-    this.setState({ loading: !loading })
+  handleCreate = (form) => {
+    form.preventDefault()
+    console.log(form)
+    const { createData } = this.state
     this.setList(createData)
-    this.setState({ loading: !loading })
   }
 
   handleDate = (value) => { // date input change
@@ -158,12 +161,18 @@ class IncomeContainer extends Component {
       })
   }
 
+
   constructor(props) {
     super(props)
 
     this.state = {
       data: [],
-      sumData: [],
+      sumData: [{
+        'income': 0,
+        'expense': 0,
+        'difference': 0,
+        'key': 'sumData'
+      }],
       thisMonth: moment().date(1).date(1).hour(0).minute(0).second(0),
       visible: false, // Modal
       createData: {
@@ -174,8 +183,7 @@ class IncomeContainer extends Component {
         sum: ''
       },
       categoryList: [],
-      firstCatgory: '',
-      loading: 'false',
+      firstCategory: '',
       handleDate: this.handleDate,
       handleOption: this.handleOption,
       handleInput: this.handleInput,
@@ -186,6 +194,7 @@ class IncomeContainer extends Component {
       handleRemove: this.handleRemove,
       handleMonth: this.handleMonth,
       handleMonthChange: this.handleMonthChange,
+      test: this.test,
     }
   }
 
@@ -232,8 +241,7 @@ IncomeContainer.proptypes = {
     sum: PropTypes.number,
   }),
   categoryList: PropTypes.object,
-  firstCatgory: PropTypes.number,
-  loading: PropTypes.boolean,
+  firstCategory: PropTypes.number,
   handleDate: PropTypes.func,
   handleOption: PropTypes.func,
   handleInput: PropTypes.func,
