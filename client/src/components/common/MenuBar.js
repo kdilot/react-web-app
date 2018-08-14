@@ -18,9 +18,6 @@ class MenuBar extends Component {
           <Menu.Item key="/">
             <Link to="/">Home</Link>
           </Menu.Item>
-          <Menu.Item key="/test">
-            <Link to="/test">test</Link>
-          </Menu.Item>
           <Menu.Item key="/home">
             <Link to="/home">Project Home</Link>
           </Menu.Item>
