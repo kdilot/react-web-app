@@ -4,7 +4,6 @@ import './App.css';
 import { MenuBar, Intro } from 'components/common';
 import IncomeTable2 from 'components/income/IncomeTable2';
 import IncomeContainer from 'components/income/IncomeContainer';
-import { Home, List } from 'pages';
 import { Layout } from 'antd';
 import styled from 'styled-components';
 
@@ -33,8 +32,6 @@ class App extends Component {
           <Content style={{ paddingTop: '5em' }} >
             <Switch>
               <Route exact path='/' component={Intro} />
-              <Route path='/home' component={Home} />
-              <Route path='/list' component={List} />
               <Route path='/income' component={IncomeContainer} />
               <Route path='/income2' component={IncomeTable2} />
             </Switch>
