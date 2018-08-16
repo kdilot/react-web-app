@@ -11,12 +11,12 @@ const IncomeInput = () => {
       {store => {
         return (
           <Row>
-            <Row>
+            <Col span={24}  style={{ textAlign: 'center', padding: '1em' }}>
               <Col span={4}>
                 <DatePicker style={{ width: '100%' }} defaultValue={moment()} onChange={store.handleDate} />
               </Col>
               <Col span={4}>
-                <Select style={{ width: '100%' }} placeholder="Type" defaultValue="expense" onChange={store.handleOption}>
+                <Select style={{ width: '100%' }} placeholder="Type" defaultValue="expense" value={store.createData.type} onChange={store.handleOption}>
                   <Option value="expense">Expense</Option>
                   <Option value="income">Income</Option>
                 </Select>
@@ -37,9 +37,9 @@ const IncomeInput = () => {
                 <InputNumber style={{ width: '100%' }} value={store.createData.sum} placeholder="Sum" precision={2} min={0} onChange={store.handleInputNumber} />
               </Col>
               <Col span={3}>
-                <Button type="primary" icon="check">Add</Button>
+                <Button type="primary" icon="check" onClick={store.handleCreate}>Add</Button>
               </Col>
-            </Row>
+            </Col>
           </Row>
         )
       }}

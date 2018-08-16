@@ -48,8 +48,8 @@ const IncomeTable = () => {
         {store => {
           return (
             <div>
-              <Popconfirm title="Sure to delete?" onConfirm={() => { store.handleRemove(record.key) }}>
-                <Button type="danger" size="small">Delete</Button>
+              <Popconfirm title="Sure to remove?" onConfirm={() => { store.handleRemove(record.key) }}>
+                <Button type="danger" size="small">Remove</Button>
               </Popconfirm>
             </div >
           )
@@ -81,7 +81,7 @@ const IncomeTable = () => {
           <Row>
             <Row>
               <Row>
-                <Col span={24} style={{ textAlign: 'center', margin: '1em 0' }}>
+                <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
                   <Col span={6} style={{ textAlign: 'right' }}>
                     <Button type="primary" shape="circle" icon="arrow-left" onClick={() => { store.handleMonthChange(-1) }} />
                   </Col>
@@ -95,7 +95,7 @@ const IncomeTable = () => {
               </Row>
 
               <Row>
-                <Col span={24}>
+                <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
                   <Table columns={columns} dataSource={store.data} pagination={{ pageSize: 15 }} size="small" scroll={{ x: 800 }} />
                 </Col>
               </Row>
