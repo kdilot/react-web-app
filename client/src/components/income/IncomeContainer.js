@@ -304,12 +304,12 @@ class IncomeContainer extends Component {
     return (
       <Store.Provider value={this.state}>
         <Row>
-          <Col span={12}>
+          <Col span={16}>
             {/* income list and data input */}
             <IncomeInput />
             <IncomeTable />
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             {/* category config and graph data */}
             <CategoryInput />
             <CategoryTable />
