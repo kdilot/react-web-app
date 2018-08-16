@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Store from "context/store";
 import axios from 'axios';
-import { Row, Col } from 'antd';
-import { IncomeInput, IncomeTable } from 'components/income'
+import { Row, Col, message } from 'antd';
+import { IncomeInput, IncomeTable, CategoryTable, CategoryInput } from 'components/income'
 import moment from 'moment';
 import PropTypes from 'prop-types';
 // import IncomeTable from './IncomeTable';
@@ -28,8 +28,8 @@ class IncomeContainer extends Component {
     const { thisMonth } = this.state
     axios.post('/api/income/list', { thisMonth })
       .then(res => (
-        this.setState({ 
-          data: res.data, 
+        this.setState({
+          data: res.data,
           sumData: [{
             income: res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
             expense: res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
@@ -43,19 +43,42 @@ class IncomeContainer extends Component {
   setList = (data) => {
     axios.post('/api/income/item', { data })
       .then((res) => {
-        this.setState(data => {
-          return {
-            ...data,
-            createData: {
-              ...data.createData,
-              description: '',
-              sum: '',
+        if (res.data.errno) {
+          message.error('Error! check your data.')
+        } else {
+          this.setState(data => {
+            return {
+              ...data,
+              createData: {
+                ...data.createData,
+                description: '',
+                sum: '',
+              }
             }
-          }
-        })
-        this.getList()
+          })
+          this.getList()
+          message.success('Success! data added.')
+        }
       })
       .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  setCategory = (data) => {
+    axios.post('/api/income/category', { data })
+      .then(res => {
+        if (res.data.errno) {
+          message.error('Error! check your data.')
+        } else {
+          this.setState({ category: '' }, () => {
+            this.getCategory()
+          })
+          message.success('Success! category added.')
+        }
+        console.log(res)
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -63,16 +86,59 @@ class IncomeContainer extends Component {
   removeList = (id) => { // remove item
     axios.post('/api/income/remove', { id: id })
       .then((res) => {
-        this.getList()
+        if (res.data.errno) {
+          message.error('Error! check your data.')
+        } else {
+          this.getList()
+          message.success('Success! data removed.')
+        }
       })
       .catch((err) => {
         console.log(err)
       })
   }
 
-  handleCreate = (form) => {
-    form.preventDefault()
-    console.log(form)
+  removeCategory = (id) => { // remove category item
+    if (this.state.categoryList.length < 2) {
+      message.error('Error! you had only 1 category.')
+    } else {
+      axios.post('/api/income/category/remove', { id: id })
+        .then((res) => {
+          if (res.data.errno) {
+            message.error('Error! check your data.')
+          } else {
+            this.getCategory()
+            message.success('Success! category removed.')
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+
+  modifyCategory = (data) => {
+    console.log('modifyCategory')
+    console.log(data)
+    axios.post('/api/income/category/modify', { name: data.name, id: data.id })
+        .then((res) => {
+          if (res.data.errno) {
+            console.log(res)
+            message.error('Error! check your data.')
+          } else {
+            console.log(res)
+            this.getCategory()
+            this.getList()
+            message.success('Success! category modified.')
+            data.target.handleCancel(data.id)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+  }
+
+  handleCreate = () => {
     const { createData } = this.state
     this.setList(createData)
   }
@@ -161,6 +227,27 @@ class IncomeContainer extends Component {
       })
   }
 
+  handleCategoryInput = (e) => {
+    this.setState({ category: e.target.value })
+    // this.setCategory(value)
+  }
+
+  handleCreateCategory = () => {
+    this.setCategory(this.state.category)
+  }
+
+  handleCategoryRemove = (id) => {
+    this.removeCategory(id)
+  }
+
+  handleCategoryModify = (name, id, parents) => {
+    const data = {
+      name: name,
+      id: id,
+      target: parents
+    }
+    this.modifyCategory(data)
+  }
 
   constructor(props) {
     super(props)
@@ -176,12 +263,13 @@ class IncomeContainer extends Component {
       thisMonth: moment().date(1).date(1).hour(0).minute(0).second(0),
       visible: false, // Modal
       createData: {
-        date: '',
-        type: '',
+        date: moment().unix(),
+        type: 'expense',
         category: '',
         description: '',
         sum: ''
       },
+      category: '',
       categoryList: [],
       firstCategory: '',
       handleDate: this.handleDate,
@@ -194,7 +282,10 @@ class IncomeContainer extends Component {
       handleRemove: this.handleRemove,
       handleMonth: this.handleMonth,
       handleMonthChange: this.handleMonthChange,
-      test: this.test,
+      handleCategoryInput: this.handleCategoryInput,
+      handleCreateCategory: this.handleCreateCategory,
+      handleCategoryRemove: this.handleCategoryRemove,
+      handleCategoryModify: this.handleCategoryModify,
     }
   }
 
@@ -220,6 +311,8 @@ class IncomeContainer extends Component {
           </Col>
           <Col span={12}>
             {/* category config and graph data */}
+            <CategoryInput />
+            <CategoryTable />
           </Col>
         </Row >
       </Store.Provider>
@@ -240,6 +333,7 @@ IncomeContainer.proptypes = {
     description: PropTypes.string,
     sum: PropTypes.number,
   }),
+  category: PropTypes.string,
   categoryList: PropTypes.object,
   firstCategory: PropTypes.number,
   handleDate: PropTypes.func,
