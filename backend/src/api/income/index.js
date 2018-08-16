@@ -16,7 +16,7 @@ module.exports = function (app) {
 
     db.query(sql, function (err, rows, fields) {
       if (err) res.json(err)
-      res.json(rows) 
+      res.json(rows)
     })
   })
 
@@ -44,7 +44,7 @@ module.exports = function (app) {
     const sql = `UPDATE income_list SET display=0 WHERE id=${req.body.id}`
     db.query(sql, function (err, rows, fields) {
       if (err) res.json(err)
-      res.json(rows) 
+      res.json(rows)
     })
   })
 
@@ -53,7 +53,16 @@ module.exports = function (app) {
     const sql = `UPDATE income_category SET display=0 WHERE id=${req.body.id}`
     db.query(sql, function (err, rows, fields) {
       if (err) res.json(err)
-      res.json(rows) 
+      res.json(rows)
+    })
+  })
+
+  // modify category name 
+  route.post('/category/modify', function (req, res) {
+    const sql = `UPDATE income_category SET name='${req.body.name}' WHERE id=${req.body.id}`
+    db.query(sql, function (err, rows, fields) {
+      if (err) res.json(err)
+      res.json(rows)
     })
   })
 
@@ -73,7 +82,7 @@ module.exports = function (app) {
       res.json(result)
     })
   })
-  
+
   // set category data
   route.post('/category', function (req, res) {
     const sql = 'INSERT INTO income_category SET ?'
@@ -109,6 +118,33 @@ module.exports = function (app) {
   //     res.json(result)
   //   })
   // })
+
+
+  //  test query
+  route.get('/test', function (req, res) {
+    const _default = 1514793600
+
+    for (i = 1; i <= 1000; i++) {
+      const data = {
+        date: Math.round(Math.random() * 31449600) + _default,
+        type: (i <= 700 ? 'expense' : 'income'),
+        category: Math.round(Math.random() * 4) + 1,
+        description: `Sample Data ${i}`,
+        sum: (i <= 700 ? (Math.random() * 200).toFixed(2) : (Math.random() * 700).toFixed(2))
+      }
+
+      const sql = 'INSERT INTO income_list SET ?'
+
+      db.query(sql, data, function (err, result) {
+        // if (err) res.json(err)
+        // res.json(result)
+      })
+    }
+    res.json('test')
+  })
+
+
+
 
   return route;
 };
