@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Store from "context/store";
 import axios from 'axios';
 import { Row, Col, message } from 'antd';
-import { IncomeInput, IncomeTable, CategoryTable, CategoryInput } from 'components/income'
+import { IncomeInput, IncomeTable, CategoryTable, CategoryInput, ReportContainer } from 'components/income'
 import moment from 'moment';
 import PropTypes from 'prop-types';
 // import IncomeTable from './IncomeTable';
@@ -31,9 +31,9 @@ class IncomeContainer extends Component {
         this.setState({
           data: res.data,
           sumData: [{
-            income: res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
-            expense: res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
-            difference: (res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2) - res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2)).toFixed(2),
+            income: '$ ' + res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
+            expense: '$ ' + res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2),
+            difference: '$ ' + (res.data.filter(data => data.type === 'income').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2) - res.data.filter(data => data.type === 'expense').map(data => data.sum).reduce((a, b) => (a + b), 0).toFixed(2)).toFixed(2),
             key: 'sumData'
           }]
         })
@@ -118,24 +118,21 @@ class IncomeContainer extends Component {
   }
 
   modifyCategory = (data) => {
-    console.log('modifyCategory')
     console.log(data)
     axios.post('/api/income/category/modify', { name: data.name, id: data.id })
-        .then((res) => {
-          if (res.data.errno) {
-            console.log(res)
-            message.error('Error! check your data.')
-          } else {
-            console.log(res)
-            this.getCategory()
-            this.getList()
-            message.success('Success! category modified.')
-            data.target.handleCancel(data.id)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      .then((res) => {
+        if (res.data.errno) {
+          message.error('Error! check your data.')
+        } else {
+          this.getCategory()
+          this.getList()
+          message.success('Success! category modified.')
+          data.target.handleCancel(data.id)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   handleCreate = () => {
@@ -260,7 +257,7 @@ class IncomeContainer extends Component {
         'difference': 0,
         'key': 'sumData'
       }],
-      thisMonth: moment().date(1).date(1).hour(0).minute(0).second(0),
+      thisMonth: moment().date(1).hour(0).minute(0).second(0),
       visible: false, // Modal
       createData: {
         date: moment().unix(),
@@ -308,6 +305,8 @@ class IncomeContainer extends Component {
             {/* income list and data input */}
             <IncomeInput />
             <IncomeTable />
+            <br />
+            <ReportContainer thisMonth={this.state.thisMonth} />
           </Col>
           <Col span={8}>
             {/* category config and graph data */}

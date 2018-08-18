@@ -1,8 +1,22 @@
 import React from 'react';
 import Store from 'context/store';
 import { Button, Row, Col, DatePicker, Table, Popconfirm } from 'antd';
+import styled from 'styled-components';
 
 const { MonthPicker } = DatePicker
+const Wrapper = styled.div`
+  tbody .in {
+    color: #61D1F7
+  }
+
+  tbody .out {
+    color: #FC96AE
+  }
+
+  .summery {
+    font-weight: bold
+  }
+`
 
 const IncomeTable = () => {
 
@@ -61,11 +75,13 @@ const IncomeTable = () => {
     title: 'Income Total',
     dataIndex: 'income',
     key: 'income',
+    className: 'in',
     align: 'center',
   }, {
     title: 'Expense Total',
     dataIndex: 'expense',
     key: 'expense',
+    className: 'out',
     align: 'center',
   }, {
     title: 'Money Difference',
@@ -79,33 +95,35 @@ const IncomeTable = () => {
       {store => {
         return (
           <Row>
-            <Row>
+            <Wrapper>
               <Row>
-                <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
-                  <Col span={6} style={{ textAlign: 'right' }}>
-                    <Button type="primary" shape="circle" icon="arrow-left" onClick={() => { store.handleMonthChange(-1) }} />
+                <Row>
+                  <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
+                    <Col span={6} style={{ textAlign: 'right' }}>
+                      <Button type="primary" shape="circle" icon="arrow-left" onClick={() => { store.handleMonthChange(-1) }} />
+                    </Col>
+                    <Col span={12}>
+                      <MonthPicker placeholder="Select month" defaultValue={store.thisMonth} value={store.thisMonth} onChange={store.handleMonth} />
+                    </Col>
+                    <Col span={6} style={{ textAlign: 'left' }}>
+                      <Button type="primary" shape="circle" icon="arrow-right" onClick={() => { store.handleMonthChange(1) }} />
+                    </Col>
                   </Col>
-                  <Col span={12}>
-                    <MonthPicker placeholder="Select month" defaultValue={store.thisMonth} value={store.thisMonth} onChange={store.handleMonth} />
-                  </Col>
-                  <Col span={6} style={{ textAlign: 'left' }}>
-                    <Button type="primary" shape="circle" icon="arrow-right" onClick={() => { store.handleMonthChange(1) }} />
-                  </Col>
-                </Col>
-              </Row>
+                </Row>
 
+                <Row>
+                  <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
+                    <Table columns={columns} dataSource={store.data} pagination={{ pageSize: 15 }} size="small" scroll={{ x: 800 }} />
+                  </Col>
+                </Row>
+              </Row>
+              <br />
               <Row>
-                <Col span={24} style={{ textAlign: 'center', padding: '1em' }}>
-                  <Table columns={columns} dataSource={store.data} pagination={{ pageSize: 15 }} size="small" scroll={{ x: 800 }} />
+                <Col span={24}>
+                  <Table columns={sumColumns} dataSource={store.sumData} pagination={{ hideOnSinglePage: true }} className="summery" scroll={{ x: 800 }} />
                 </Col>
               </Row>
-            </Row>
-            <br />
-            <Row>
-              <Col span={24}>
-                <Table columns={sumColumns} dataSource={store.sumData} pagination={{ hideOnSinglePage: true }} scroll={{ x: 800 }} />
-              </Col>
-            </Row>
+            </Wrapper>
           </Row>
         )
       }}
