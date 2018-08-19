@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Store from "context/store";
 import axios from 'axios';
-import { Row, Col, message } from 'antd';
+import { Row, Col, message, Card } from 'antd';
 import { IncomeInput, IncomeTable, CategoryTable, CategoryInput, ReportContainer } from 'components/income'
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -246,6 +246,15 @@ class IncomeContainer extends Component {
     this.modifyCategory(data)
   }
 
+  handleFlag = () => {
+    const { categoryFlagName } = this.state
+    if (categoryFlagName === 'Show') {
+      this.setState({ categoryFlag: 'block', categoryFlagName: 'hide' })
+    } else {
+      this.setState({ categoryFlag: 'none', categoryFlagName: 'Show' })
+    }
+  }
+
   constructor(props) {
     super(props)
 
@@ -269,6 +278,8 @@ class IncomeContainer extends Component {
       category: '',
       categoryList: [],
       firstCategory: '',
+      categoryFlagName: 'Show',
+      categoryFlag: 'none',
       handleDate: this.handleDate,
       handleOption: this.handleOption,
       handleInput: this.handleInput,
@@ -283,6 +294,7 @@ class IncomeContainer extends Component {
       handleCreateCategory: this.handleCreateCategory,
       handleCategoryRemove: this.handleCategoryRemove,
       handleCategoryModify: this.handleCategoryModify,
+      handleFlag: this.handleFlag
     }
   }
 
@@ -309,9 +321,10 @@ class IncomeContainer extends Component {
             <ReportContainer thisMonth={this.state.thisMonth} />
           </Col>
           <Col span={8}>
-            {/* category config and graph data */}
-            <CategoryInput />
-            <CategoryTable />
+            <Card title="Category List" extra={<div style={{ cursor: 'pointer' }} onClick={this.handleFlag}>{this.state.categoryFlagName}</div>} style={{ padding: '1em', background: '#f0f2f5' }}>
+              <CategoryInput />
+              <CategoryTable />
+            </Card>
           </Col>
         </Row >
       </Store.Provider>
@@ -334,6 +347,8 @@ IncomeContainer.proptypes = {
   }),
   category: PropTypes.string,
   categoryList: PropTypes.object,
+  categoryFlag: PropTypes.boolean,
+  categoryFlagName: PropTypes.string,
   firstCategory: PropTypes.number,
   handleDate: PropTypes.func,
   handleOption: PropTypes.func,
