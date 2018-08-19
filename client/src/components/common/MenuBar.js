@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
 
-const SubMenu = Menu.SubMenu;
 
 class MenuBar extends Component {
   render() {
@@ -18,17 +17,9 @@ class MenuBar extends Component {
           <Menu.Item key="/">
             <Link to="/">Home</Link>
           </Menu.Item>
-          <Menu.Item key="/home">
-            <Link to="/home">Project Home</Link>
-          </Menu.Item>
-          <SubMenu key="sub1" title={<span>Example Pages</span>}>
-            <Menu.Item key="/income">
+          <Menu.Item key="/income">
             <Link to="/income">Income Management</Link>
-            </Menu.Item>
-            <Menu.Item key="/income2">
-            <Link to="/income2">Income Management</Link>
-            </Menu.Item>
-          </SubMenu>
+          </Menu.Item>
         </Menu>
       </div>
     );
