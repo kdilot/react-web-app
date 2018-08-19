@@ -20,6 +20,30 @@ module.exports = function (app) {
     })
   })
 
+  // get report list
+  route.post('/report', function (req, res) {
+    const month = req.body.thisMonth
+    // console.log(moment(thisMonth).month(0).date(1).hour(0).minute(0).second(0))
+    const thisYear = moment(month).month(0).date(1).hour(0).minute(0).second(0)
+    const thisMonth = moment(month).date(1).hour(0).minute(0).second(0)
+    const type = req.body.type ? req.body.type : 'income'
+    const report = req.body.report
+
+    let sql = ''
+    if(report === 'Y') {
+      const MonthQuery = `AND (date >= ${moment(thisYear).unix()} and date < ${moment(thisYear).add(1, 'Y').unix()})`
+      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%Y/%m') month, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY month`
+    } else if(report === 'M') {
+      const MonthQuery = `AND (date >= ${moment(thisMonth).unix()} and date < ${moment(thisMonth).add(1, 'M').unix()})`
+      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%m/%d') month, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY month`
+    }
+    
+    db.query(sql, function (err, rows, fields) {
+      if (err) res.json(err)
+      res.json(rows)
+    })
+  })
+
   //  sample (delete)
 
   route.get('/list', function (req, res) {
