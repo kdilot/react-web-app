@@ -36,7 +36,7 @@ const Intro = () => {
         <IntroBox>
           <h1>Development</h1>
           <hr />
-          <p>HTML/CSS | JavaScipt | Bootstrap | React | NodeJS | Koa | Express</p>
+          <p>React | React(Context) | NodeJS | Express | Ant Design | MariaDB</p>
         </IntroBox>
       </Col>
     </Row>

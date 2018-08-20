@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import { MenuBar, Intro } from 'components/common';
-import IncomeTable2 from 'components/income/IncomeTable2';
 import IncomeContainer from 'components/income/IncomeContainer';
 import { Layout } from 'antd';
 import styled from 'styled-components';
@@ -33,7 +32,6 @@ class App extends Component {
             <Switch>
               <Route exact path='/' component={Intro} />
               <Route path='/income' component={IncomeContainer} />
-              <Route path='/income2' component={IncomeTable2} />
             </Switch>
           </Content>
           <Footer style={{ textAlign: 'center' }}>
