@@ -45,7 +45,7 @@ const IncomeTable = () => {
     align: 'center',
     width: '41%',
   }, {
-    title: 'Sum',
+    title: 'Sum($)',
     dataIndex: 'sum',
     key: 'sum',
     align: 'center',

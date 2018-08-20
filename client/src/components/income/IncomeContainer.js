@@ -5,7 +5,7 @@ import { Row, Col, message, Card } from 'antd';
 import { IncomeInput, IncomeTable, CategoryTable, CategoryInput, ReportContainer } from 'components/income'
 import moment from 'moment';
 import PropTypes from 'prop-types';
-// import IncomeTable from './IncomeTable';
+// import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class IncomeContainer extends Component {
 
@@ -76,7 +76,6 @@ class IncomeContainer extends Component {
           })
           message.success('Success! category added.')
         }
-        console.log(res)
       })
       .catch(err => {
         console.log(err)
@@ -118,7 +117,6 @@ class IncomeContainer extends Component {
   }
 
   modifyCategory = (data) => {
-    console.log(data)
     axios.post('/api/income/category/modify', { name: data.name, id: data.id })
       .then((res) => {
         if (res.data.errno) {
@@ -299,8 +297,8 @@ class IncomeContainer extends Component {
   }
 
   componentDidMount = () => {
-    this.getList()
     this.getCategory()
+    this.getList()
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -317,14 +315,15 @@ class IncomeContainer extends Component {
             {/* income list and data input */}
             <IncomeInput />
             <IncomeTable />
-            <br />
-            <ReportContainer thisMonth={this.state.thisMonth} />
           </Col>
           <Col span={8}>
             <Card title="Category List" extra={<div style={{ cursor: 'pointer' }} onClick={this.handleFlag}>{this.state.categoryFlagName}</div>} style={{ padding: '1em', background: '#f0f2f5' }}>
               <CategoryInput />
               <CategoryTable />
             </Card>
+          </Col>
+          <Col span={24}>
+            <ReportContainer thisMonth={this.state.thisMonth} categoryList={this.state.categoryList} />
           </Col>
         </Row >
       </Store.Provider>
