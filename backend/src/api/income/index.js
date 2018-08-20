@@ -36,21 +36,17 @@ module.exports = function (app) {
     } else if(report === 'M') {
       const MonthQuery = `AND (date >= ${moment(thisMonth).unix()} and date < ${moment(thisMonth).add(1, 'M').unix()})`
       sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%m/%d') month, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY month`
+    } else if(report === 'CY') {
+      const MonthQuery = `AND (date >= ${moment(thisYear).unix()} and date < ${moment(thisYear).add(1, 'Y').unix()})`
+      sql = `SELECT category as name, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY category`
+    } else if(report === 'CM') {
+      const MonthQuery = `AND (date >= ${moment(thisMonth).unix()} and date < ${moment(thisMonth).add(1, 'M').unix()})`
+      sql = `SELECT category as name, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY category`
     }
     
     db.query(sql, function (err, rows, fields) {
       if (err) res.json(err)
       res.json(rows)
-    })
-  })
-
-  //  sample (delete)
-
-  route.get('/list', function (req, res) {
-    const sql = "SELECT id as 'key', FROM_UNIXTIME(date, '%m/%d/%Y') as date, type, category, description, sum FROM income_list where display=1"
-    db.query(sql, function (err, rows, fields) {
-      res.json(rows)
-      // console.log(rows)
     })
   })
 
