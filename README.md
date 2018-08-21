@@ -1,2 +1,14 @@
-# react-web-app
-web app with react &amp; express
+# react-income-mangement
+
+Frontend
+- - -
+> react,
+> react-context,
+> ant-design,
+> recharts
+
+Backend
+- - -
+> NodeJS Express,
+> MariaDB,
+> axios
