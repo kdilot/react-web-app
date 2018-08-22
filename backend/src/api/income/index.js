@@ -32,10 +32,10 @@ module.exports = function (app) {
     let sql = ''
     if(report === 'Y') {
       const MonthQuery = `AND (date >= ${moment(thisYear).unix()} and date < ${moment(thisYear).add(1, 'Y').unix()})`
-      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%Y/%m') month, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY month`
+      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%Y/%m') as name, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY name`
     } else if(report === 'M') {
       const MonthQuery = `AND (date >= ${moment(thisMonth).unix()} and date < ${moment(thisMonth).add(1, 'M').unix()})`
-      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%m/%d') month, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY month`
+      sql = `SELECT DATE_FORMAT(FROM_UNIXTIME(date),'%m/%d') as name, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY name`
     } else if(report === 'CY') {
       const MonthQuery = `AND (date >= ${moment(thisYear).unix()} and date < ${moment(thisYear).add(1, 'Y').unix()})`
       sql = `SELECT category as name, sum(sum) as sum FROM income_list WHERE display=1 AND type='${type}' ${MonthQuery} GROUP BY category`
